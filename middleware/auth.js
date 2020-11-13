@@ -47,6 +47,7 @@ function authRequired(req, res, next) {
         } catch (error) {
             throw new ExpressError("Invalid token. Please re-authenticate.", 401);
         }
+        console.log("--------AFTER ERROR----------");
         res.locals.username = token.username;
         res.locals.is_admin = token.is_admin;
         res.locals.token = receivedToken;
