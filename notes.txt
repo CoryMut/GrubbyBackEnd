@@ -1,0 +1,9 @@
+// "_token": {
+// 	"$id": "/properties/token",
+// 	"type": "string",
+// 	"title": "The Token Schema ",
+// 	"default": "",
+// 	"examples": [
+// 		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJpY2t5MiIsImlzX2FkbWluIjpmYWxzZSwiaWF0IjoxNTk2NjQzODM1fQ.PLH7LiJdFCtorMuUUnw-nHIs_IRJ_9fLd4O1FE5ROB0"
+// 	]
+// }

@@ -1,0 +1,22 @@
+POST /login (LOGIN)
+
+GET /users
+POST /users (REGISTER)
+GET /users/:username
+PATCH /users/:username	(AUTH)
+DELETE /users/:username	(AUTH)
+
+GET /jobs 			(AUTH)
+POST /jobs 		(ADMIN)
+GET /jobs/:id 		(AUTH)
+PATCH /jobs/:id 		(ADMIN)
+DELETE /jobs/:id 		(ADMIN)
+POST /jobs/:id/apply		(AUTH)
+
+
+GET /companies		(AUTH)
+POST /companies		(ADMIN)
+GET /companies/:handle 	(AUTH)
+PATCH /companies/:handle	(AUTH)
+DELETE /companies/:handle	(ADMIN)
+

@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- '10'
+services:
+  - postgresql
+before_script:
+  # - psql -c 'create database jobly_test;' -U postgres
+  - psql -c 'CREATE DATABASE jobly_test;' -U postgres
+  - psql --dbname=jobly_test --file=jobly_test_seed2.sql
+script:
+- npm run test
