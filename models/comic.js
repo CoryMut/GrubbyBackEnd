@@ -71,16 +71,36 @@ class Comic {
     }
 
     static async create(data) {
-        console.log(data);
-        console.log(data.description);
-        const result = await db.query(
-            `INSERT INTO comics (comic_id, description, name)
-             VALUES ($1, $2, $3) 
-             RETURNING *`,
-            [data.comic_id, data.description, data.name]
-        );
+        try {
+            const result = await db.query(
+                `INSERT INTO comics (comic_id, description, name, vector)
+                 VALUES ($1, $2, $3, to_tsvector($2)) 
+                 RETURNING *`,
+                [data.comic_id, data.description, data.name]
+            );
 
-        return result.rows[0];
+            return result.rows[0];
+        } catch (error) {
+            throw new ExpressError("Comic already exists", 400);
+        }
+    }
+
+    static async getAllComics() {
+        const result = await db.query(`SELECT comic_id, description, name FROM comics ORDER BY comic_id`);
+        return result.rows;
+    }
+
+    static async getAllCharacters() {
+        const result = await db.query(`SELECT name FROM characters ORDER BY name`);
+        return result.rows;
+    }
+
+    static async search(searchTerm) {
+        const result = await db.query(
+            `SELECT comic_id, description, name FROM comics WHERE vector @@ plainto_tsquery($1)`,
+            [searchTerm]
+        );
+        return result.rows;
     }
 }
 

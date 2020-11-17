@@ -15,10 +15,11 @@ CREATE TABLE characters
 CREATE TABLE comics
 (
     id SERIAL PRIMARY KEY,
-    comic_id INT NOT NULL,
-    description TEXT NOT NULL,
-    name TEXT NOT NULL,
-    date_posted TIMESTAMP
+    comic_id INT NOT NULL UNIQUE,
+    description TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL UNIQUE,
+    date_posted TIMESTAMP DEFAULT NOW(),
+    vector tsvector NOT NULL
 );
 
 CREATE TABLE characters_comics
@@ -39,5 +40,5 @@ CREATE TABLE characters_comics
 
 INSERT INTO characters (name) VALUES ('Grubby'), ('Richard'), ('Dennis');
 
-
+INSERT INTO users (username, password, email, is_admin) VALUES ('Cory','$2b$12$ayNgksMQ/Z6elK7xpQfEk.KboypDLbKTzhkEe0WAiVYBXug8dECqK','cory@corymutchler.com', true);
 

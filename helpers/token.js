@@ -18,4 +18,13 @@ function makeCookie(user) {
     return jwt.sign(payload, KEY_SECRET);
 }
 
-module.exports = { makeToken, makeCookie };
+function verifyCookie(cookie) {
+    try {
+        jwt.verify(cookie, KEY_SECRET);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+module.exports = { makeToken, makeCookie, verifyCookie };

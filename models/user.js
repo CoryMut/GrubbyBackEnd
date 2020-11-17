@@ -34,9 +34,21 @@ class User {
         return new User(user);
     }
 
+    static async checkEmail(email) {
+        const results = await db.query(`SELECT username, email, is_admin FROM users WHERE email = $1`, [email]);
+
+        const user = results.rows[0];
+
+        if (user) {
+            // throw new ExpressError(`email already in use`, 404);
+            return true;
+        }
+
+        return false;
+    }
+
     static async register(data) {
         const hashedPassword = await bcrypt.hash(data.password, 12);
-
         const result = await db.query(
             `INSERT INTO users (
 					username, password, email) 
@@ -44,7 +56,6 @@ class User {
 			 RETURNING username, email, is_admin`,
             [data.username, hashedPassword, data.email]
         );
-
         return result.rows[0];
     }
 
@@ -72,8 +83,8 @@ class User {
         const results = await db.query(
             `
 					SELECT username, password, is_admin 
-					FROM users WHERE username = $1`,
-            [data.username]
+					FROM users WHERE email = $1`,
+            [data.email]
         );
 
         const user = results.rows[0];
@@ -86,7 +97,7 @@ class User {
                 throw new ExpressError(`Incorrect password`, 401);
             }
         } else {
-            throw new ExpressError(`No user exists with username ${data.username}`, 404);
+            throw new ExpressError(`No user exists with email ${data.email}`, 404);
         }
     }
 }

@@ -21,8 +21,8 @@ function checkForCookie(req, res, next) {
 async function authUser(req, res, next) {
     console.log("in auth user");
     try {
-        if (!req.body.username || !req.body.password) {
-            throw new ExpressError("Missing credentials. Expecting username and password.", 400);
+        if (!req.body.email || !req.body.password) {
+            throw new ExpressError("Missing credentials. Expecting email and password.", 400);
         } else {
             const user = await User.authenticate(req.body);
             res.locals.user = user;

@@ -5,7 +5,7 @@ const ExpressError = require("../helpers/expressError");
 const { checkForUsername, validateSchema } = require("../middleware/user");
 const { checkCorrectUser } = require("../middleware/auth");
 const router = new express.Router();
-const { makeToken } = require("../helpers/token");
+const { makeToken, makeCookie } = require("../helpers/token");
 const bcrypt = require("bcrypt");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
@@ -32,18 +32,20 @@ router.get("/", async (req, res, next) => {
 
 router.post("/register", validateSchema, async (req, res, next) => {
     try {
-        console.log("IN REGISTER POST");
         const user = await User.register(req.body);
-        console.log(user);
         const token = makeToken(user);
-        // return res.status(201).json({ user });
-        return res.status(201).json({ token });
+        const cookie = makeCookie(user);
+        res.cookie("authcookie", cookie, { maxAge: 28800000, httpOnly: true });
+
+        return res.status(201).json({ token, user });
+
+        // return res.status(201).json({ token });
     } catch (error) {
         if (error.code === "23505") {
             if (error.constraint === "users_email_key") {
-                return res.status(409).json({ error: new ExpressError(`email already in use.`, 409) });
+                return res.status(409).json({ error: new ExpressError(`Email already in use.`, 409) });
             } else {
-                return res.status(409).json({ error: new ExpressError("User with that username already exists", 409) });
+                return res.status(409).json({ error: new ExpressError("Username not available", 409) });
             }
         }
         return next(error);
