@@ -23,7 +23,8 @@ if (process.env.NODE_ENV === "production") {
 //         rejectUnauthorized: false,
 //     },
 // });
-
+console.log(db);
+console.log(process.env.NODE_ENV);
 db.connect();
 
 module.exports = db;

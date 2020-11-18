@@ -18,6 +18,7 @@ if (process.env.NODE_ENV === "test") {
 } else {
     DB_URI = process.env.DATABASE_URL || "grubby";
 }
+console.log(DB_URI);
 
 module.exports = {
     SECRET_KEY,
