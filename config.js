@@ -1,6 +1,6 @@
 /** Shared config for application; can be req'd many places. */
 
-require("dotenv").config();
+require("dotenv").config({ path: require("find-config")(".env") });
 
 const SECRET_KEY = process.env.SECRET_KEY || "something_secret_and_secure";
 const KEY_SECRET = process.env.KEY_SECRET || "something_secret_and_secure";
@@ -8,8 +8,8 @@ const PORT = +process.env.PORT || 5000;
 
 const BCRYPT_WORK_FACTOR = process.env.BCRYPT_WORK_FACTOR || 12;
 
-const accessKeyId = process.env.accessKeyId;
-const secretAccessKey = process.env.secretAccessKey;
+const accessKeyId = process.env.accessKeyId || "why no work";
+const secretAccessKey = process.env.secretAccessKey || "why no work";
 
 let DB_URI;
 
@@ -18,7 +18,6 @@ if (process.env.NODE_ENV === "test") {
 } else {
     DB_URI = process.env.DATABASE_URL || "grubby";
 }
-console.log(DB_URI);
 
 module.exports = {
     SECRET_KEY,

@@ -84,7 +84,7 @@ class User {
             `
 					SELECT username, password, is_admin 
 					FROM users WHERE email = $1`,
-            [data.email]
+            [data.email.toLowerCase()]
         );
 
         const user = results.rows[0];

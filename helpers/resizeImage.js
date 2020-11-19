@@ -5,7 +5,6 @@ const resizeImage = async (image) => {
     let fileSizes = ["320", "384", "512", "683", "800", "960"];
     // let url = "https://grubbythegrape.sfo2.digitaloceanspaces.com";
     // let imageURLs = {};
-
     fileSizes.forEach(async (size) => {
         try {
             let format = image.mimetype;

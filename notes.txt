@@ -16,3 +16,5 @@ origin: [
             "http://10.0.1.50:3000",
             "https://10.0.1.50:3000",
         ]
+
+        origin: ["https://beta.grubbythegrape.com", "https://www.grubbythegrape.com"]
