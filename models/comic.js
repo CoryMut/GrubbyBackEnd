@@ -75,7 +75,7 @@ class Comic {
         const result = await db
             .query(
                 `INSERT INTO comics (comic_id, description, name, vector)
-                 VALUES ($1, $2, $3, to_tsvector($2)) 
+                 VALUES ($1, $2, $3, to_tsvector('english', $2)) 
                  RETURNING *`,
                 [data.comic_id, data.description, data.name]
             )
