@@ -8,12 +8,11 @@ function checkForCookie(req, res, next) {
         const authCookie = req.cookies.authcookie;
 
         let cookie = jwt.verify(authCookie, KEY_SECRET);
-        console.log(cookie);
         res.locals.user = cookie.user;
         res.locals.is_admin = cookie.is_admin;
         next();
     } catch (error) {
-        console.log(error);
+        console.error(error);
         throw new ExpressError("Please log in to view this page", 403);
     }
 }
@@ -46,7 +45,6 @@ function authRequired(req, res, next) {
         } catch (error) {
             throw new ExpressError("Invalid token. Please re-authenticate.", 401);
         }
-        console.log("--------AFTER ERROR----------");
         res.locals.username = token.username;
         res.locals.is_admin = token.is_admin;
         res.locals.token = receivedToken;

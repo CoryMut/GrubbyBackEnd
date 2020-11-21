@@ -24,9 +24,11 @@ app.use(morgan("tiny"));
 const authRoutes = require("./routes/auth");
 const comicRoutes = require("./routes/comic");
 const userRoutes = require("./routes/users");
+const adminRoutes = require("./routes/admin");
 
 app.use("/comic", comicRoutes);
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
 app.use(authRoutes);
 
 /** 404 handler */

@@ -9,6 +9,7 @@ const { verifyCookie } = require("../helpers/token");
 
 const router = new express.Router();
 const server = http.createServer(router);
+
 const wss = new WebSocket.Server({
     server,
     verifyClient: async function (info, callback) {
@@ -89,7 +90,6 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
         return res.status(200).json({ message: "Thanks for the comic!" });
     } catch (error) {
-        console.error("---------LINE 95------", error.message);
         sendMessage(99, error.message, "error");
         return next(error);
     }
@@ -123,6 +123,25 @@ router.get("/search", async (req, res, next) => {
         let result = await Comic.search(searchTerm);
 
         return res.status(200).json({ results: result });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.patch("/:comic_id", checkForCookie, async (req, res, next) => {
+    try {
+        let isAdmin = res.locals.is_admin;
+
+        if (!isAdmin) {
+            throw new ExpressError("Not authorized to view this content, 401");
+        }
+
+        let { comic_id } = req.params;
+        let { data } = req.body;
+        let result = await Comic.update(comic_id, data);
+
+        return res.status(200).json({ results: result, message: "Updated comic successfully." });
     } catch (error) {
         console.error(error);
         return next(error);

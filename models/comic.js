@@ -80,18 +80,30 @@ class Comic {
                 [data.comic_id, data.description, data.name]
             )
             .catch((error) => {
-                console.log(error);
+                console.error(error);
                 throw new ExpressError("Comic already exists", 400);
             });
 
         return result.rows[0];
-        // } catch (error) {
-        //     console.log(error);
-        //     throw new ExpressError("Comic already exists", 400);
-        // }
+    }
+
+    static async update(comic_id, data) {
+        const result = await db.query(
+            `UPDATE comics SET name = $1, description = $2, vector = to_tsvector('english', $2)  WHERE comic_id = $3 RETURNING comic_id, description, name, date_posted`,
+            [data.name, data.description, comic_id]
+        );
+        if (result.rows.length === 0) {
+            throw new ExpressError(`No comic found with comic_id : ${comic_id}`, 404);
+        }
+        return result.rows[0];
     }
 
     static async getAllComics() {
+        const result = await db.query(`SELECT comic_id, description, name FROM comics ORDER BY comic_id`);
+        return result.rows;
+    }
+
+    static async getAllAdminComics() {
         const result = await db.query(`SELECT comic_id, description, name FROM comics ORDER BY comic_id`);
         return result.rows;
     }
