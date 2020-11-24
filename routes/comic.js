@@ -97,8 +97,11 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
 router.get("/all", async (req, res, next) => {
     try {
-        let result = await Comic.getAllComics();
-        return res.status(200).json({ comics: result });
+        let { page } = req.query;
+        let result = await Comic.getAllComics(page);
+        let numComics = await Comic.getCount();
+        let count = Math.ceil(Number(numComics) / 20);
+        return res.status(200).json({ comics: result, count: count });
     } catch (error) {
         console.error(error);
         return next(error);
@@ -121,8 +124,8 @@ router.get("/search", async (req, res, next) => {
     try {
         let { searchTerm } = req.query;
         let result = await Comic.search(searchTerm);
-
-        return res.status(200).json({ results: result });
+        let count = Math.ceil(Number(result.length) / 20);
+        return res.status(200).json({ results: result, count: count });
     } catch (error) {
         console.error(error);
         return next(error);

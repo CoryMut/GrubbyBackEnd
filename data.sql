@@ -37,6 +37,13 @@ CREATE TABLE characters_comics
         is_admin BOOLEAN NOT NULL DEFAULT FALSE
     );
 
+CREATE TABLE favorites
+    (
+        username TEXT REFERENCES users(username) ON DELETE CASCADE,
+        comic_id INT REFERENCES comics(comic_id) ON DELETE CASCADE,
+        PRIMARY KEY (username, comic_id)
+    );
+
 
 INSERT INTO characters (name) VALUES ('Grubby'), ('Richard'), ('Dennis');
 

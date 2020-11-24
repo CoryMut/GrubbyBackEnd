@@ -98,9 +98,18 @@ class Comic {
         return result.rows[0];
     }
 
-    static async getAllComics() {
-        const result = await db.query(`SELECT comic_id, description, name FROM comics ORDER BY comic_id`);
+    static async getAllComics(page) {
+        let offset = (Number(page) - 1) * 20;
+        const result = await db.query(
+            `SELECT comic_id, description, name FROM comics ORDER BY comic_id LIMIT 20 OFFSET $1`,
+            [offset]
+        );
         return result.rows;
+    }
+
+    static async getCount() {
+        const result = await db.query(`SELECT COUNT(*) FROM comics`);
+        return result.rows[0].count;
     }
 
     static async getAllAdminComics() {
