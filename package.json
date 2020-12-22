@@ -7,7 +7,7 @@
         "verbose": false
     },
     "scripts": {
-        "test": "jest --runInBand --silent",
+        "test": "jest",
         "start": "nodemon -e html,css,js,json server.js",
         "seed": "psql < data.sql"
     },
@@ -26,6 +26,7 @@
         "find-config": "^1.0.0",
         "jsonschema": "^1.2.6",
         "jsonwebtoken": "^8.5.1",
+        "md5-file": "^5.0.0",
         "moment": "^2.29.1",
         "morgan": "^1.10.0",
         "nodemon": "^2.0.4",

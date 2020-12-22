@@ -2,10 +2,12 @@ const express = require("express");
 const http = require("http");
 const Comic = require("../models/comic");
 const resizeImage = require("../helpers/resizeImage");
+const validateFile = require("../helpers/validateFile");
 const WebSocket = require("ws");
 
 const { checkForCookie } = require("../middleware/auth");
 const { verifyCookie } = require("../helpers/token");
+const ExpressError = require("../helpers/expressError");
 
 const router = new express.Router();
 const server = http.createServer(router);
@@ -59,7 +61,7 @@ router.get("/upload", checkForCookie, async (req, res, next) => {
 router.post("/upload", checkForCookie, async (req, res, next) => {
     try {
         if (!req.files) {
-            return res.status(500).send({ msg: "file is not found" });
+            return res.status(400).send({ msg: "file is not found" });
         }
 
         let data = JSON.parse(req.body.data);
@@ -76,15 +78,20 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
         const comic = req.files.file;
 
+        await validateFile(comic);
+
         sendMessage(50, "Resizing images...");
 
         await resizeImage(comic);
 
         sendMessage(75, "Resize complete, uploading remaining data...");
 
-        data["comic_id"] = data.name.match(/\d+/)[0];
+        let numComic = await Comic.getCount();
 
-        await Comic.create(data);
+        // data["comic_id"] = data.name.match(/\d+/)[0];
+        data["comic_id"] = Number(numComic) + 1;
+
+        await Comic.create(data, comic.md5);
 
         sendMessage(100, "All done!");
 
@@ -98,10 +105,14 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 router.get("/all", async (req, res, next) => {
     try {
         let { page } = req.query;
-        let result = await Comic.getAllComics(page);
-        let numComics = await Comic.getCount();
-        let count = Math.ceil(Number(numComics) / 20);
-        return res.status(200).json({ comics: result, count: count });
+        if (page) {
+            let result = await Comic.getAllComics(page);
+            let numComics = await Comic.getCount();
+            let count = Math.ceil(Number(numComics) / 20);
+            return res.status(200).json({ comics: result, count: count });
+        } else {
+            return res.status(400).json({ message: "Invalid page request" });
+        }
     } catch (error) {
         console.error(error);
         return next(error);
@@ -122,10 +133,18 @@ router.get("/characters", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
     try {
-        let { searchTerm } = req.query;
-        let result = await Comic.search(searchTerm);
-        let count = Math.ceil(Number(result.length) / 20);
-        return res.status(200).json({ results: result, count: count });
+        let { searchTerm, page = 1 } = req.query;
+        if (!searchTerm) {
+            throw new ExpressError("Missing search term", 400);
+        }
+        let result = await Comic.search(searchTerm, page);
+        let count;
+        if (result.length > 0) {
+            count = Math.ceil(Number(result[0].full_count) / 20);
+        } else {
+            count = 0;
+        }
+        return res.status(200).json({ comics: result, count: count });
     } catch (error) {
         console.error(error);
         return next(error);
@@ -151,6 +170,71 @@ router.patch("/:comic_id", checkForCookie, async (req, res, next) => {
     }
 });
 
-server.listen(80);
+router.get("/:comic_id/emotes", async (req, res, next) => {
+    try {
+        let { comic_id } = req.params;
+        let { labels } = req.query;
+        labels = labels.split("&");
+        let result = await Comic.getEmoteData(labels, comic_id);
+        return res.status(200).json({ emotes: result });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.get("/:comic_id/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+
+        let result = await Comic.getUserEmoteData(username, comic_id);
+
+        return res.status(200).json({ reaction: result.reaction });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.post("/:comic_id/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        let { data } = req.body;
+        let { reaction } = data;
+        let result = await Comic.createUserEmoteData(username, comic_id, reaction);
+        return res.status(200).json({ message: "Created user emote data successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.patch("/:comic_id/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        let { data } = req.body;
+        let { reaction } = data;
+        let result = await Comic.updateUserEmoteData(username, comic_id, reaction);
+        return res.status(200).json({ message: "Updated user emote data successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.delete("/:comic_id", async (req, res, next) => {
+    try {
+        let { comic_id } = req.params;
+        let result = await Comic.deleteAll(comic_id);
+        return res.status(200).json({ message: "Deleted comic data successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+if (process.env.NODE_ENV !== "test") {
+    server.listen(80);
+}
 
 module.exports = router;

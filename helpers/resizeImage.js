@@ -3,8 +3,7 @@ const upload = require("../helpers/DigitalOcean");
 
 const resizeImage = async (image) => {
     let fileSizes = ["320", "384", "512", "683", "800", "960"];
-    // let url = "https://grubbythegrape.sfo2.digitaloceanspaces.com";
-    // let imageURLs = {};
+
     fileSizes.forEach(async (size) => {
         try {
             let format = image.mimetype;
@@ -15,9 +14,6 @@ const resizeImage = async (image) => {
                 .toBuffer();
             await upload(resize, size, format, name);
 
-            // imageURLs[size] = `${url}/${size}/${name}`;
-
-            // console.log("IN RESIZE AND ABOUT TO RETURN", imageURLs);
             return;
         } catch (error) {
             console.log(error);

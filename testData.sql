@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS grubby;
+DROP DATABASE IF EXISTS grubby_test;
 
-CREATE DATABASE grubby;
+CREATE DATABASE grubby_test;
 
-\c grubby
+\c grubby_test
 
 CREATE TABLE characters
 (
@@ -16,7 +16,6 @@ CREATE TABLE comics
     comic_id INT NOT NULL UNIQUE,
     description TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL UNIQUE,
-    hash TEXT NOT NULL UNIQUE,
     date_posted TIMESTAMP DEFAULT NOW(),
     vector tsvector NOT NULL
 );
@@ -43,8 +42,6 @@ CREATE TABLE favorites
         PRIMARY KEY (username, comic_id)
     );
 
--- CREATE TYPE reaction AS ENUM ('Laughing', 'Clapping', 'ROFL', 'Grinning', 'Clown');
-
 CREATE TABLE emoji
 (
     username TEXT REFERENCES users(username) ON DELETE CASCADE,
@@ -53,12 +50,10 @@ CREATE TABLE emoji
 );
 
 
-
-
 INSERT INTO characters (name) VALUES ('Grubby'), ('Richard'), ('Dennis');
 
 INSERT INTO users (username, password, email, is_admin) VALUES ('Cory','$2b$12$ayNgksMQ/Z6elK7xpQfEk.KboypDLbKTzhkEe0WAiVYBXug8dECqK','cory@corymutchler.com', true);
 
--- INSERT INTO comics(comic_id, description, name, hash, vector) VALUES (1, 'Grubby makes a small business', 'Grubby_1.jpg', '4a030cd2eb410b0f0b144ee2a3b96f4d', to_tsvector('english', 'Grubby makes a small business'));
+INSERT INTO comics (id, comic_id, description, name, vector) VALUES (1, 1, 'This is a test comic.', 'Test Comic', 'Test Comic');
 
--- INSERT INTO emoji (username, comic_id, reaction) VALUES ('Cory', 1, 'Laughing');
+INSERT INTO emoji (username, comic_id, reaction) VALUES ('Cory', 1, 'Laughing');
