@@ -6,6 +6,7 @@
 
 const axios = require("axios");
 const cheerio = require("cheerio");
+const md5File = require("md5-file");
 
 const Comic = require("../models/comic");
 
@@ -19,7 +20,7 @@ const Comic = require("../models/comic");
     const $ = cheerio.load(result.data);
     const comics = $("body").find("a.lightbox-grubby img");
 
-    comics.map((comic) => {
+    comics.map(async (comic) => {
         let info = {
             comic_id: "",
             description: "",
@@ -37,13 +38,19 @@ const Comic = require("../models/comic");
         info["comic_id"] = comics[comic].attribs.alt.match(/\#(.*?)\./)[1].trim();
 
         // info["name"] = comics[comic].attribs.alt.match(/[^.]*/)[0];
-        info["name"] = comics[comic].parent.attribs.href.match(/Grubby_\d+.jpg/)[0];
-
+        let name = comics[comic].parent.attribs.href.match(/Grubby_\d+.jpg/)[0];
+        info["name"] = name;
+        const hash = md5File.sync(`../../assets/${name}`);
+        console.log(`The MD5 sum of ${name} is: ${hash}`);
+        info["hash"] = hash;
+        console.log("AFTER HASH");
         comicInfo.push(info);
     });
+    console.log("AFTER GETTING INFO");
     comicInfo.forEach(async (comic) => {
         try {
-            await Comic.create(comic);
+            await Comic.create(comic, comic.hash);
+            console.log("COMIC CREATED");
             return;
         } catch (error) {
             process.exit(1);
