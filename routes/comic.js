@@ -12,6 +12,8 @@ const ExpressError = require("../helpers/expressError");
 const router = new express.Router();
 const server = http.createServer(router);
 
+const { WS_PORT } = require("../config");
+
 const wss = new WebSocket.Server({
     server,
     verifyClient: async function (info, callback) {
@@ -234,7 +236,7 @@ router.delete("/:comic_id", async (req, res, next) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-    server.listen(80);
+    server.listen(WS_PORT);
 }
 
 module.exports = router;

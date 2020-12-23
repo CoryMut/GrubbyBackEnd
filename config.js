@@ -5,6 +5,7 @@ require("dotenv").config({ path: require("find-config")(".env") });
 const SECRET_KEY = process.env.SECRET_KEY || "something_secret_and_secure";
 const KEY_SECRET = process.env.KEY_SECRET || "something_secret_and_secure";
 const PORT = +process.env.PORT || 5000;
+const WS_PORT = +process.env.WS_PORT || 443;
 
 const BCRYPT_WORK_FACTOR = process.env.BCRYPT_WORK_FACTOR || 12;
 
@@ -27,4 +28,5 @@ module.exports = {
     BCRYPT_WORK_FACTOR,
     secretAccessKey,
     accessKeyId,
+    WS_PORT,
 };
