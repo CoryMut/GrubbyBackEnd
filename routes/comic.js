@@ -16,6 +16,7 @@ const { WS_PORT } = require("../config");
 
 const wss = new WebSocket.Server({
     server,
+    path: "/comic/upload",
     verifyClient: async function (info, callback) {
         try {
             const cookie = info.req.headers.cookie.split("authcookie=")[1];
@@ -30,6 +31,7 @@ const wss = new WebSocket.Server({
         }
     },
 });
+// const wss = new WebSocket.Server({ server, path: "/comic/upload" });
 
 wss.on("connection", function connection(ws) {
     console.log("establish websocket connection");
