@@ -85,4 +85,14 @@ router.delete("/:username", checkCorrectUser, checkForUsername, async (req, res,
     }
 });
 
+router.get("/favorites/:username", async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const favorites = await User.favorites(username);
+        return res.status(200).json({ favorites });
+    } catch (error) {
+        return next(error);
+    }
+});
+
 module.exports = router;

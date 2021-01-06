@@ -157,10 +157,14 @@ class Comic {
         ]);
 
         if (result.rows.length === 0) {
-            throw new ExpressError(`No emote data for comic : ${comic_id}`, 404);
+            // throw new ExpressError(`No emote data for comic : ${comic_id}`, 404);
+            result = { reaction: "" };
+        } else {
+            result = result.rows[0];
         }
 
-        return result.rows[0];
+        // return result.rows[0];
+        return result;
     }
 
     static async createUserEmoteData(username, comic_id, reaction) {
@@ -190,6 +194,11 @@ class Comic {
         return result.rows[0];
     }
 
+    static async deleteUserEmoteData(username, comic_id) {
+        await db.query(`DELETE FROM emoji WHERE username = $1 AND comic_id = $2`, [username, comic_id]);
+        return;
+    }
+
     static async checkExistingFile(name, md5) {
         let result = await db.query(`SELECT * FROM comics WHERE name = $1 OR hash = $2`, [name, md5]);
 
@@ -201,12 +210,38 @@ class Comic {
     }
 
     static async deleteAll(comic_id) {
-        let result = await db.query(`DELETE FROM comics WHERE comic_id = $1`, [comic_id]);
+        await db.query(`DELETE FROM comics WHERE comic_id = $1`, [comic_id]);
         return;
     }
 
     static async deletePartial(comic_id) {
-        let result = await db.query(`DELETE FROM comics WHERE comic_id = $1`, [comic_id]);
+        await db.query(`DELETE FROM comics WHERE comic_id = $1`, [comic_id]);
+        return;
+    }
+
+    static async favorite(comic_id, username) {
+        let result = await db.query(`INSERT INTO favorites (comic_id, username) VALUES ($1, $2) RETURNING *`, [
+            comic_id,
+            username,
+        ]);
+        return result.rows[0];
+    }
+
+    static async checkUserFavorite(comic_id, username) {
+        let result = await db.query(`SELECT * FROM favorites WHERE comic_id = $1 AND username = $2`, [
+            comic_id,
+            username,
+        ]);
+        if (result.rows.length !== 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static async deleteFavorite(comic_id, username) {
+        await db.query(`DELETE FROM favorites WHERE comic_id = $1 AND username = $2`, [comic_id, username]);
+
         return;
     }
 }
