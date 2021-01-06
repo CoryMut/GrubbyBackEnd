@@ -100,6 +100,18 @@ class User {
             throw new ExpressError(`No user exists with email ${data.email}`, 404);
         }
     }
+
+    static async favorites(username) {
+        const results = await db.query(
+            `SELECT comics.name, comics.comic_id, comics.description FROM favorites JOIN comics ON favorites.comic_id = comics.comic_id WHERE username = $1;`,
+            [username]
+        );
+        if (results.rows.length === 0) {
+            return [];
+        } else {
+            return results.rows;
+        }
+    }
 }
 
 module.exports = User;

@@ -1,49 +1,13 @@
 const express = require("express");
+const WebSocket = require("ws");
+
 const Comic = require("../models/comic");
 const resizeImage = require("../helpers/resizeImage");
 const validateFile = require("../helpers/validateFile");
-// const http = require("http");
-const WebSocket = require("ws");
-
 const { checkForCookie } = require("../middleware/auth");
-// const { verifyCookie } = require("../helpers/token");
 const ExpressError = require("../helpers/expressError");
 
 const router = new express.Router();
-
-// const server = http.createServer(router);
-
-// const { WS_PORT } = require("../config");
-
-// const wss = new WebSocket.Server({
-//     server,
-//     path: "/comic/upload",
-//     verifyClient: async function (info, callback) {
-//         try {
-//             const cookie = info.req.headers.cookie.split("authcookie=")[1];
-//             let result = await verifyCookie(cookie);
-//             if (!result) {
-//                 callback(false, 401, "Unauthorized");
-//             } else {
-//                 callback(true);
-//             }
-//         } catch (error) {
-//             callback(false, 401, "Unauthorized");
-//         }
-//     },
-// });
-
-// const wss = new WebSocket.Server({ server, path: "/comic/upload" });
-
-// wss.on("connection", function connection(ws) {
-//     console.log("establish websocket connection");
-//     ws.on("message", (message) => {
-//         console.log("received: %s", message);
-//     });
-//     ws.onclose = function (event) {
-//         console.log("closed ws");
-//     };
-// });
 
 router.get("/latest", async (req, res, next) => {
     try {
@@ -72,14 +36,6 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
         let data = JSON.parse(req.body.data);
 
-        // function sendMessage(num, message, type = "success") {
-        //     wss.clients.forEach((client) => {
-        //         if (client.readyState === WebSocket.OPEN) {
-        //             client.send(JSON.stringify({ progress: num, message, type }));
-        //         }
-        //     });
-        // }
-
         function sendMessage(num, message, type = "success") {
             req.app.locals.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
@@ -102,7 +58,6 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
         let numComic = await Comic.getCount();
 
-        // data["comic_id"] = data.name.match(/\d+/)[0];
         data["comic_id"] = Number(numComic) + 1;
 
         await Comic.create(data, comic.md5);
@@ -236,6 +191,17 @@ router.patch("/:comic_id/:username", async (req, res, next) => {
     }
 });
 
+router.delete("/:comic_id/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        await Comic.deleteUserEmoteData(username, comic_id);
+        return res.status(200).json({ message: "Deleted user emote data successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
 router.delete("/:comic_id", async (req, res, next) => {
     try {
         let { comic_id } = req.params;
@@ -247,10 +213,37 @@ router.delete("/:comic_id", async (req, res, next) => {
     }
 });
 
-// if (process.env.NODE_ENV !== "test") {
-//     server.listen(WS_PORT, function () {
-//         console.log("WebSocket listening on port 443");
-//     });
-// }
+router.get("/:comic_id/favorite/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        let result = await Comic.checkUserFavorite(comic_id, username);
+        return res.status(200).json({ isFavorite: result });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.post("/:comic_id/favorite/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        let result = await Comic.favorite(comic_id, username);
+        return res.status(200).json({ message: "User favorited successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.delete("/:comic_id/favorite/:username", async (req, res, next) => {
+    try {
+        let { comic_id, username } = req.params;
+        let result = await Comic.deleteFavorite(comic_id, username);
+        return res.status(200).json({ message: "Favorite deleted successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
 
 module.exports = router;
