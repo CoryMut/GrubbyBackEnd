@@ -7,7 +7,7 @@ const validateFile = async (file) => {
         let result = await Comic.checkExistingFile(name, md5);
 
         if (result) {
-            throw new ExpressError(`This file has previously been uploaded under the name ${result.name}`, 400);
+            throw new ExpressError(`This file has previously been uploaded under the name ${result.name}`, 409);
         } else {
             return;
         }
