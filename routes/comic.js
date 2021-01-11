@@ -19,17 +19,6 @@ router.get("/latest", async (req, res, next) => {
     }
 });
 
-router.get("/:comic_id", async (req, res, next) => {
-    try {
-        let { comic_id } = req.params;
-        let result = await Comic.get(comic_id);
-        return res.status(200).json({ comic: result });
-    } catch (error) {
-        console.error(error);
-        return next(error);
-    }
-});
-
 router.get("/upload", checkForCookie, async (req, res, next) => {
     try {
         return res.status(200).json({ message: "Thanks for visiting!" });
@@ -251,6 +240,17 @@ router.delete("/:comic_id/favorite/:username", async (req, res, next) => {
         let { comic_id, username } = req.params;
         let result = await Comic.deleteFavorite(comic_id, username);
         return res.status(200).json({ message: "Favorite deleted successfully!" });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
+router.get("/:comic_id", async (req, res, next) => {
+    try {
+        let { comic_id } = req.params;
+        let result = await Comic.get(comic_id);
+        return res.status(200).json({ comic: result });
     } catch (error) {
         console.error(error);
         return next(error);
