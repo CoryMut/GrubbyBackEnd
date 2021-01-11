@@ -40,7 +40,7 @@ class Comic {
     /** get comic by id. */
 
     static async get(id) {
-        const results = await db.query(`SELECT * FROM comics WHERE id = $1`, [id]);
+        const results = await db.query(`SELECT * FROM comics WHERE comic_id = $1`, [id]);
 
         let comic = results.rows[0];
 
@@ -48,11 +48,10 @@ class Comic {
             throw new ExpressError(`No such comic with id: ${id}`, 404);
         }
 
+        const emotes = await Comic.getEmoteData(["Laughing", "Clapping", "ROFL", "Grinning", "Clown"], comic.comic_id);
+        comic = { ...comic, emotes: emotes };
+
         comic = new Comic(comic);
-
-        const companyResults = await db.query("SELECT * FROM companies WHERE handle = $1", [comic.company_handle]);
-
-        comic.company = companyResults.rows[0];
 
         return comic;
     }

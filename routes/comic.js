@@ -19,6 +19,17 @@ router.get("/latest", async (req, res, next) => {
     }
 });
 
+router.get("/:comic_id", async (req, res, next) => {
+    try {
+        let { comic_id } = req.params;
+        let result = await Comic.get(comic_id);
+        return res.status(200).json({ comic: result });
+    } catch (error) {
+        console.error(error);
+        return next(error);
+    }
+});
+
 router.get("/upload", checkForCookie, async (req, res, next) => {
     try {
         return res.status(200).json({ message: "Thanks for visiting!" });
