@@ -4,8 +4,8 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 const bcrypt = require("bcrypt");
 
 class User {
-    constructor({ username, email, is_admin }) {
-        (this.username = username), (this.email = email), (this.is_admin = is_admin);
+    constructor({ username, email, is_admin, display_name }) {
+        (this.username = username), (this.email = email), (this.is_admin = is_admin), (this.displayName = display_name);
     }
 
     /** find all users. */
@@ -22,13 +22,15 @@ class User {
 
     /** get user. */
 
-    static async get(username) {
-        const results = await db.query(`SELECT username, email, is_admin FROM users WHERE username = $1`, [username]);
+    static async get(email) {
+        const results = await db.query(`SELECT username, email, is_admin, display_name FROM users WHERE email = $1`, [
+            email,
+        ]);
 
         const user = results.rows[0];
 
         if (user === undefined) {
-            throw new ExpressError(`No user found with username: ${username}`, 404);
+            throw new ExpressError(`No user found with email: ${email}`, 404);
         }
 
         return new User(user);
@@ -51,10 +53,10 @@ class User {
         const hashedPassword = await bcrypt.hash(data.password, 12);
         const result = await db.query(
             `INSERT INTO users (
-					username, password, email) 
-			 VALUES ($1, $2, $3) 
+					username, password, email, display_name) 
+			 VALUES ($1, $2, $3, $4) 
 			 RETURNING username, email, is_admin`,
-            [data.username, hashedPassword, data.email]
+            [data.username, hashedPassword, data.email, data.username]
         );
         return result.rows[0];
     }
@@ -81,23 +83,28 @@ class User {
 
     static async authenticate(data) {
         const results = await db.query(
-            `
-					SELECT username, password, is_admin 
-					FROM users WHERE email = $1`,
+            `SELECT username, password, is_admin, display_name, email 
+			FROM users WHERE email = $1`,
             [data.email.toLowerCase()]
         );
 
         const user = results.rows[0];
 
+        if (!user) {
+            throw new ExpressError(`No user exists with email: ${data.email}`, 404);
+        } else if (!user.password && user.email) {
+            throw new ExpressError("Could not sign you in. You most likely used Login with Google!", 400);
+        }
+
         if (user) {
             const validUser = await bcrypt.compare(data.password, user.password);
             if (validUser) {
-                return { username: user.username, is_admin: user.is_admin };
+                return { username: user.username, is_admin: user.is_admin, displayName: user.display_name };
             } else {
                 throw new ExpressError(`Incorrect password`, 401);
             }
         } else {
-            throw new ExpressError(`No user exists with email ${data.email}`, 404);
+            throw new ExpressError(`No user exists with email: ${data.email}`, 404);
         }
     }
 
@@ -111,6 +118,28 @@ class User {
         } else {
             return results.rows;
         }
+    }
+
+    static async register_external_user(data, provider) {
+        const organicUser = await db.query(
+            `INSERT INTO users (
+					username, email, external_login, display_name) 
+			 VALUES ($1, $2, $3, $4) 
+			 RETURNING *`,
+            [data.userId, data.email, true, data.name]
+        );
+
+        let { id } = organicUser;
+        let { provider_id } = await db.query(`SELECT id FROM external_auth_provider WHERE name= $1`, [provider]);
+
+        const result = await db.query(
+            `INSERT INTO user_external_login (
+					user_account_id, external_auth_provider_id, external_user_id, email) 
+			 VALUES ($1, $2, $3, $4) 
+			 RETURNING *`,
+            [id, provider_id, data.userId, data.email]
+        );
+        return organicUser.rows[0];
     }
 }
 
