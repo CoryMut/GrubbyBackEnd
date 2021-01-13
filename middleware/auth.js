@@ -48,6 +48,7 @@ function authRequired(req, res, next) {
         res.locals.username = token.username;
         res.locals.is_admin = token.is_admin;
         res.locals.token = receivedToken;
+        res.locals.name = token.displayName;
         return next();
     } catch (error) {
         return next(error);

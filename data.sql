@@ -36,6 +36,8 @@ CREATE TABLE characters_comics
         is_admin BOOLEAN NOT NULL DEFAULT FALSE
     );
 
+
+
 CREATE TABLE favorites
     (
         username TEXT REFERENCES users(username) ON DELETE CASCADE,

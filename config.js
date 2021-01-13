@@ -12,6 +12,8 @@ const BCRYPT_WORK_FACTOR = process.env.BCRYPT_WORK_FACTOR || 12;
 const accessKeyId = process.env.accessKeyId || "why no work";
 const secretAccessKey = process.env.secretAccessKey || "why no work";
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "google client id";
+
 let DB_URI;
 
 if (process.env.NODE_ENV === "test") {
@@ -29,4 +31,5 @@ module.exports = {
     secretAccessKey,
     accessKeyId,
     WS_PORT,
+    GOOGLE_CLIENT_ID,
 };

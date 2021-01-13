@@ -24,6 +24,7 @@
         "express-fileupload": "^1.2.0",
         "express-ws": "^4.0.0",
         "find-config": "^1.0.0",
+        "google-auth-library": "^6.1.4",
         "jsonschema": "^1.2.6",
         "jsonwebtoken": "^8.5.1",
         "md5-file": "^5.0.0",
