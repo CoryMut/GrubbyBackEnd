@@ -8,6 +8,7 @@ function checkForCookie(req, res, next) {
         const authCookie = req.cookies.authcookie;
 
         let cookie = jwt.verify(authCookie, KEY_SECRET);
+        console.log(cookie);
         res.locals.user = cookie.user;
         res.locals.is_admin = cookie.is_admin;
         next();

@@ -49,11 +49,15 @@ router.post("/auth/google", async (req, res, next) => {
         if (existingUser) {
             const user = await User.get(email);
             newToken = makeToken(user);
+            const cookie = makeCookie(user);
+            res.cookie("authcookie", cookie, { maxAge: 28800000, httpOnly: true });
             return res.json({ token: newToken, user });
         } else {
             let data = { userId, email, name: fullName };
             let newUser = await User.register_external_user(data, provider);
             newToken = makeToken(newUser);
+            const cookie = makeCookie(newUser);
+            res.cookie("authcookie", cookie, { maxAge: 28800000, httpOnly: true });
             return res.json({ token: newToken, user: newUser });
         }
     } catch (error) {

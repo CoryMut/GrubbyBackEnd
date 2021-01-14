@@ -26,14 +26,13 @@ class User {
         const results = await db.query(`SELECT username, email, is_admin, display_name FROM users WHERE email = $1`, [
             email,
         ]);
-
         const user = results.rows[0];
-
+        console.log(user);
         if (user === undefined) {
             throw new ExpressError(`No user found with email: ${email}`, 404);
         }
 
-        return new User(user);
+        return { username: user.username, is_admin: user.is_admin, displayName: user.display_name, email: user.email };
     }
 
     static async checkEmail(email) {
