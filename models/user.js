@@ -27,7 +27,7 @@ class User {
             email,
         ]);
         const user = results.rows[0];
-        console.log(user);
+
         if (user === undefined) {
             throw new ExpressError(`No user found with email: ${email}`, 404);
         }

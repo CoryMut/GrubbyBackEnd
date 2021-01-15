@@ -6,15 +6,17 @@ const jwt = require("jsonwebtoken");
 function checkForCookie(req, res, next) {
     try {
         const authCookie = req.cookies.authcookie;
-
+        if (!authCookie) {
+            throw new ExpressError("You do not have permission to view this page", 403);
+        }
         let cookie = jwt.verify(authCookie, KEY_SECRET);
-        console.log(cookie);
         res.locals.user = cookie.user;
         res.locals.is_admin = cookie.is_admin;
         next();
     } catch (error) {
         console.error(error);
-        throw new ExpressError("Please log in to view this page", 403);
+        // throw new ExpressError("Please log in to view this page", 403);
+        return next(error);
     }
 }
 
