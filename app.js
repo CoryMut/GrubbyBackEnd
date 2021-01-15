@@ -12,16 +12,10 @@ app.use(express.json());
 app.use(
     cors({
         origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com"],
-        // credentials: true,
+        credentials: true,
         exposedHeaders: ["set-cookie"],
     })
 );
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://grubbythegrape.com"); // update to match the domain you will make the request from
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    // res.header("Access-Control-Allow-Credentials", true);
-    next();
-});
 
 app.use(fileUpload());
 app.use(cookieParser());
