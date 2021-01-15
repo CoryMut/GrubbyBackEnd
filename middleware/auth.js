@@ -9,7 +9,6 @@ function checkForCookie(req, res, next) {
         if (!authCookie) {
             throw new ExpressError("You do not have permission to view this page", 403);
         }
-        console.log(authCookie);
         let cookie = jwt.verify(authCookie, KEY_SECRET);
         res.locals.user = cookie.user;
         res.locals.is_admin = cookie.is_admin;
