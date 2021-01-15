@@ -37,11 +37,13 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
         let data = JSON.parse(req.body.data);
 
         function sendMessage(num, message, type = "success") {
-            req.app.locals.clients.forEach((client) => {
-                if (client.readyState === WebSocket.OPEN) {
-                    client.send(JSON.stringify({ progress: num, message, type }));
-                }
-            });
+            if (req.app.locals.clients) {
+                req.app.locals.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(JSON.stringify({ progress: num, message, type }));
+                    }
+                });
+            }
         }
 
         sendMessage(25, "File received");

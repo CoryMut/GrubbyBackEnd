@@ -15,6 +15,7 @@ const wss = new WebSocket.Server({
     path: "/comic/upload",
     verifyClient: async function (info, callback) {
         try {
+            console.log(info.req.headers);
             const cookie = info.req.headers.cookie.split("authcookie=")[1];
             let result = await verifyCookie(cookie);
             if (!result) {
@@ -23,6 +24,7 @@ const wss = new WebSocket.Server({
                 callback(true);
             }
         } catch (error) {
+            console.log(error);
             callback(false, 401, "Unauthorized");
         }
     },
