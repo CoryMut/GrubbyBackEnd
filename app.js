@@ -9,14 +9,13 @@ const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
-
-const corsOptions = {
-    origin: "https://grubbythegrape.com/",
-    credentials: true,
-    exposedHeaders: ["set-cookie"],
-};
-
-app.use(cors(corsOptions));
+app.use(
+    cors({
+        origin: ["https://grubbythegrape.com/", "https://www.grubbythegrape.com"],
+        credentials: true,
+        exposedHeaders: ["set-cookie"],
+    })
+);
 app.use(fileUpload());
 app.use(cookieParser());
 
