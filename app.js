@@ -9,13 +9,14 @@ const morgan = require("morgan");
 const app = express();
 
 app.use(express.json());
-app.use(
-    cors({
-        origin: ["https://grubbythegrape.com/", "https://www.grubbythegrape.com"],
-        credentials: true,
-        exposedHeaders: ["set-cookie"],
-    })
-);
+
+const corsOptions = {
+    origin: ["https://grubbythegrape.com/", "https://www.grubbythegrape.com"],
+    credentials: true,
+    exposedHeaders: ["set-cookie"],
+};
+
+app.use(cors(corsOptions));
 app.use(fileUpload());
 app.use(cookieParser());
 
@@ -26,7 +27,7 @@ const comicRoutes = require("./routes/comic");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
 
-app.use("/comic", comicRoutes);
+app.use("/comic", cors(corsOptions), comicRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use(authRoutes);
