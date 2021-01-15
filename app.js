@@ -16,7 +16,7 @@ const corsOptions = {
     exposedHeaders: ["set-cookie"],
 };
 
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(fileUpload());
 app.use(cookieParser());
 
@@ -31,10 +31,6 @@ app.use("/comic", comicRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use(authRoutes);
-
-// app.get("/test", cors(corsOptions), async (req, res, next) => {
-//     return res.status(200).json({ message: "only available from origin" });
-// });
 
 /** 404 handler */
 
