@@ -11,25 +11,6 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 
 const sqlForPartialUpdate = require("../helpers/partialUpdate");
 
-router.get("/", async (req, res, next) => {
-    try {
-        const users = await User.all();
-
-        if (users.length === 0) {
-            return res.status(404).json({
-                error: new ExpressError(
-                    "Either there are no users or something went wrong. Please try again later.",
-                    404
-                ),
-            });
-        }
-
-        return res.json({ users });
-    } catch (err) {
-        return next(err);
-    }
-});
-
 router.post("/register", validateSchema, async (req, res, next) => {
     try {
         const user = await User.register(req.body);
