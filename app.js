@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-    origin: ["https://grubbythegrape.com/", "https://www.grubbythegrape.com"],
+    origin: "https://grubbythegrape.com/",
     credentials: true,
     exposedHeaders: ["set-cookie"],
 };
@@ -27,10 +27,14 @@ const comicRoutes = require("./routes/comic");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
 
-app.use("/comic", cors(corsOptions), comicRoutes);
+app.use("/comic", comicRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use(authRoutes);
+
+app.get("/test", cors(corsOptions), async (req, res, next) => {
+    return res.status(200).json({ message: "only available from origin" });
+});
 
 /** 404 handler */
 
