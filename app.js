@@ -11,11 +11,12 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: ["https://grubbythegrape.com/", "https://www.grubbythegrape.com"],
+        origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com"],
         credentials: true,
         exposedHeaders: ["set-cookie"],
     })
 );
+
 app.use(fileUpload());
 app.use(cookieParser());
 
