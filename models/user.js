@@ -1,6 +1,6 @@
 const db = require("../db");
 const ExpressError = require("../helpers/expressError");
-const { BCRYPT_WORK_FACTOR } = require("../config");
+// const { BCRYPT_WORK_FACTOR } = require("../config");
 const bcrypt = require("bcrypt");
 
 class User {

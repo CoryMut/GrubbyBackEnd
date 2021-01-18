@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-
+const { verifyClient } = require("./helpers/token");
 const ExpressError = require("./helpers/expressError");
 const morgan = require("morgan");
 
@@ -21,6 +21,20 @@ app.use(fileUpload());
 app.use(cookieParser());
 
 app.use(morgan("tiny"));
+
+app.use(async (req, res, next) => {
+    try {
+        const token = req.headers.authorization;
+        const origin = req.headers.origin;
+        if (!token || !origin) {
+            throw Error("Unauthorized");
+        }
+        await verifyClient(token, origin);
+        return next();
+    } catch (error) {
+        return res.status(401).send({ message: "You are not authorized to access this API." });
+    }
+});
 
 const authRoutes = require("./routes/auth");
 const comicRoutes = require("./routes/comic");

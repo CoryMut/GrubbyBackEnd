@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { SECRET_KEY, KEY_SECRET } = require("../config");
+const { SECRET_KEY, KEY_SECRET, CLIENT_SECRET, ORIGIN1, ORIGIN2 } = require("../config");
 
 function makeToken(user) {
     let payload = {
@@ -28,4 +28,18 @@ function verifyCookie(cookie) {
     }
 }
 
-module.exports = { makeToken, makeCookie, verifyCookie };
+function verifyClient(token, origin) {
+    try {
+        if (origin !== ORIGIN1 && origin !== ORIGIN2) {
+            throw Error("Unauthorized Origin");
+        } else {
+            jwt.verify(token, CLIENT_SECRET);
+            return true;
+        }
+    } catch (error) {
+        console.error(error);
+        throw Error("Unauthorized Token");
+    }
+}
+
+module.exports = { makeToken, makeCookie, verifyCookie, verifyClient };
