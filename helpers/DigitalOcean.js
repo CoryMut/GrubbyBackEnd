@@ -28,6 +28,7 @@ const upload = (file, folder, format, name) => {
             // request.httpRequest.headers["Content-Type"] = blob.type;
             request.httpRequest.headers["Content-Type"] = format;
             request.httpRequest.headers["x-amz-acl"] = "public-read";
+            request.httpRequest.headers["Cache-Control"] = "max-age=31536000";
         })
         .send((error) => {
             console.log("IN .SEND");
