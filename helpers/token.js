@@ -8,8 +8,9 @@ function makeToken(user) {
         displayName: user.displayName,
     };
 
-    return jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+    return jwt.sign(payload, SECRET_KEY, { expiresIn: "72h" });
 }
+
 function makeCookie(user) {
     let payload = {
         username: user.username,
