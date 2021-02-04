@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.use(morgan("tiny"));
 
-app.use(async (req, res, next) => {
+async function checkClient(req, res, next) {
     try {
         const token = req.headers.authorization;
         const origin = req.headers.origin;
@@ -34,13 +34,16 @@ app.use(async (req, res, next) => {
     } catch (error) {
         return res.status(401).send({ message: "You are not authorized to access this API." });
     }
-});
+}
 
 const authRoutes = require("./routes/auth");
 const comicRoutes = require("./routes/comic");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
+const verifyRoutes = require("./routes/verify");
 
+app.use(verifyRoutes);
+app.use(checkClient);
 app.use("/comic", comicRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);

@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const ExpressError = require("../helpers/expressError");
 const { SECRET_KEY, KEY_SECRET } = require("../config");
+const { makeToken } = require("../helpers/token");
 const jwt = require("jsonwebtoken");
 
 function checkForCookie(req, res, next) {
@@ -15,7 +16,6 @@ function checkForCookie(req, res, next) {
         next();
     } catch (error) {
         console.error(error);
-        // throw new ExpressError("Please log in to view this page", 403);
         return next(error);
     }
 }
@@ -43,16 +43,26 @@ function authRequired(req, res, next) {
 
         const receivedToken = req.body._token || req.query._token;
         let token;
-        try {
-            token = jwt.verify(receivedToken, SECRET_KEY);
-        } catch (error) {
-            throw new ExpressError("Invalid token. Please re-authenticate.", 401);
-        }
-        res.locals.username = token.username;
-        res.locals.is_admin = token.is_admin;
-        res.locals.token = receivedToken;
-        res.locals.name = token.displayName;
-        return next();
+        jwt.verify(receivedToken, SECRET_KEY, function (err, decoded) {
+            if (err && err.name === "TokenExpiredError") {
+                let decoded = jwt.decode(receivedToken);
+                let { username, is_admin, displayName } = decoded;
+                let user = { username, is_admin, displayName };
+                token = makeToken(user);
+                res.locals.username = username;
+                res.locals.is_admin = is_admin;
+                res.locals.token = token;
+                res.locals.name = displayName;
+            } else if (err) {
+                throw new ExpressError("Invalid token. Please re-authenticate.", 401);
+            } else if (!err) {
+                res.locals.username = decoded.username;
+                res.locals.is_admin = decoded.is_admin;
+                res.locals.name = decoded.displayName;
+            }
+
+            next();
+        });
     } catch (error) {
         return next(error);
     }
