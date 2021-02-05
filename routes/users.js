@@ -32,7 +32,6 @@ router.post("/register", validateSchema, async (req, res, next) => {
                 return res.status(409).json({ error: new ExpressError("Username not available", 409) });
             }
         } else {
-            console.log(error);
             return res.status(409).json({ error: new ExpressError("Something went wrong. Try again?", 409) });
         }
     }

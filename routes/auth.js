@@ -57,7 +57,6 @@ router.post("/auth/google", async (req, res, next) => {
         } else {
             let data = { userId, email, name: fullName };
             let newUser = await User.register_external_user(data, provider);
-            console.log(newUser);
             newToken = makeToken(newUser);
             const cookie = makeCookie(newUser);
             res.cookie("authcookie", cookie, { maxAge: 28800000, httpOnly: true });
