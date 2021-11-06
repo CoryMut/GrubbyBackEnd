@@ -14,7 +14,6 @@ const Comic = require("../models/comic");
 // It does not upload the photos to my CDN
 
 (async () => {
-    console.log("GETTING INFO");
     let comicInfo = [];
     let result = await axios.get("https://www.grubbythegrape.com/all-comics");
     const $ = cheerio.load(result.data);
@@ -41,23 +40,16 @@ const Comic = require("../models/comic");
         let name = comics[comic].parent.attribs.href.match(/Grubby_\d+.jpg/)[0];
         info["name"] = name;
         const hash = md5File.sync(`../../assets/${name}`);
-        console.log(`The MD5 sum of ${name} is: ${hash}`);
         info["hash"] = hash;
-        console.log("AFTER HASH");
-        comicInfo.push(info);
     });
-    console.log("AFTER GETTING INFO");
     comicInfo.forEach(async (comic) => {
         try {
             await Comic.create(comic, comic.hash);
-            console.log("COMIC CREATED");
             return;
         } catch (error) {
             process.exit(1);
         }
     });
 })().catch((e) => {
-    console.log("INSIDE BIGGEST CATCH");
-    console.log(e);
     process.exit(1);
 });

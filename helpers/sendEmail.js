@@ -1,5 +1,6 @@
 const sgMail = require("@sendgrid/mail");
 const { VERIFY_EMAIL, PASS_RESET, SENDGRID_API_KEY, SENDGRID_EMAIL, SENDGRID_NAME } = require("../config");
+
 const templates = {
     verification: VERIFY_EMAIL,
     password: PASS_RESET,

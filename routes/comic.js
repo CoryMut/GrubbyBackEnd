@@ -1,5 +1,6 @@
 const express = require("express");
 const WebSocket = require("ws");
+const sanitize = require("sanitize-filename");
 
 const Comic = require("../models/comic");
 const resizeImage = require("../helpers/resizeImage");
@@ -35,6 +36,8 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
         }
 
         let data = JSON.parse(req.body.data);
+        let sanitizedName = sanitize(data.name).replace(/\s/g, "");
+        data.name = sanitizedName;
 
         function sendMessage(num, message, type = "success") {
             if (req.app.locals.clients) {
@@ -49,6 +52,8 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
         sendMessage(25, "File received");
 
         const comic = req.files.file;
+
+        comic.name = sanitizedName;
 
         await validateFile(comic);
 

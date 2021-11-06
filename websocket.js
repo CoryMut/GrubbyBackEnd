@@ -20,7 +20,6 @@ const wss = new WebSocket.Server({
                 callback(true);
             }
         } catch (error) {
-            console.log(error);
             callback(false, 401, "Unauthorized");
         }
     },

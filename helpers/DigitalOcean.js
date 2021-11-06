@@ -31,7 +31,6 @@ const upload = (file, folder, format, name) => {
             request.httpRequest.headers["Cache-Control"] = "max-age=31536000";
         })
         .send((error) => {
-            console.log("IN .SEND");
             if (error) console.log(error);
             else {
                 // If there is no error updating the editor with the imageUrl
