@@ -80,12 +80,15 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
 router.get("/all", async (req, res, next) => {
     try {
-        let { page } = req.query;
+        let { page, sort } = req.query;
         if (page) {
-            let result = await Comic.getAllComics(page);
+            console.log("SORT", sort);
+            console.log(typeof sort);
+            let arraySort = sort === "true" ? "DESC" : "ASC";
+            let result = await Comic.getAllComics(page, arraySort);
             let numComics = await Comic.getCount();
             let count = Math.ceil(Number(numComics) / 20);
-            return res.status(200).json({ comics: result, count: count });
+            return res.status(200).json({ comics: result, count: count, resultCount: numComics });
         } else {
             return res.status(400).json({ message: "Invalid page request" });
         }
@@ -109,18 +112,23 @@ router.get("/characters", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
     try {
-        let { searchTerm, page = 1 } = req.query;
+        let { searchTerm, page = 1, sort = "ASC" } = req.query;
         if (!searchTerm) {
             throw new ExpressError("Missing search term", 400);
         }
-        let result = await Comic.search(searchTerm, page);
+        let arraySort = sort === "true" ? "DESC" : "ASC";
+
+        let result = await Comic.search(searchTerm, page, arraySort);
         let count;
+        let fullCount;
         if (result.length > 0) {
             count = Math.ceil(Number(result[0].full_count) / 20);
+            fullCount = result[0].full_count;
         } else {
             count = 0;
+            fullCount = 0;
         }
-        return res.status(200).json({ comics: result, count: count });
+        return res.status(200).json({ comics: result, count: count, resultCount: fullCount });
     } catch (error) {
         console.error(error);
         return next(error);

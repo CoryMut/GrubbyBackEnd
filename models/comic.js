@@ -100,12 +100,21 @@ class Comic {
         return result.rows[0];
     }
 
-    static async getAllComics(page) {
+    static async getAllComics(page, arraySort) {
         let offset = (Number(page) - 1) * 20;
-        const result = await db.query(
-            `SELECT comic_id, description, name FROM comics ORDER BY comic_id LIMIT 20 OFFSET $1`,
-            [offset]
-        );
+        let result;
+        if (arraySort === "ASC") {
+            result = await db.query(
+                `SELECT comic_id, description, name FROM comics ORDER BY comics ASC LIMIT 20 OFFSET $1`,
+                [offset]
+            );
+        } else if (arraySort === "DESC") {
+            result = await db.query(
+                `SELECT comic_id, description, name FROM comics ORDER BY comics DESC LIMIT 20 OFFSET $1`,
+                [offset]
+            );
+        }
+
         return result.rows;
     }
 
@@ -124,12 +133,21 @@ class Comic {
         return result.rows;
     }
 
-    static async search(searchTerm, page) {
+    static async search(searchTerm, page, arraySort) {
         let offset = (Number(page) - 1) * 20;
-        const result = await db.query(
-            `SELECT comic_id, description, name, COUNT(*) OVER() AS full_count FROM comics WHERE vector @@ plainto_tsquery($1) ORDER BY comic_id LIMIT 20 OFFSET $2`,
-            [searchTerm, offset]
-        );
+        let result;
+        if (arraySort === "ASC") {
+            result = await db.query(
+                `SELECT comic_id, description, name, COUNT(*) OVER() AS full_count FROM comics WHERE vector @@ plainto_tsquery($1) ORDER BY comic_id ASC LIMIT 20 OFFSET $2`,
+                [searchTerm, offset]
+            );
+        } else if (arraySort === "DESC") {
+            result = await db.query(
+                `SELECT comic_id, description, name, COUNT(*) OVER() AS full_count FROM comics WHERE vector @@ plainto_tsquery($1) ORDER BY comic_id DESC LIMIT 20 OFFSET $2`,
+                [searchTerm, offset]
+            );
+        }
+
         return result.rows;
     }
 
