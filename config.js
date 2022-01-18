@@ -21,6 +21,7 @@ const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
 const ORIGIN1 = process.env.ORIGIN1 || "http://localhost:3000";
 const ORIGIN2 = process.env.ORIGIN2 || "http://localhost:3000";
+const ORIGIN3 = process.env.ORIGIN3 || "http://localhost:3000";
 
 const VERIFY_EMAIL = process.env.VERIFY_EMAIL || "template";
 const PASS_RESET = process.env.PASS_RESET || "template";
@@ -53,6 +54,7 @@ module.exports = {
     GOOGLE_CLIENT_ID,
     ORIGIN1,
     ORIGIN2,
+    ORIGIN3,
     BASE_URL,
     CLIENT_URL,
     PASS_RESET,
