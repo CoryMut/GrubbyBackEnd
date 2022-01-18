@@ -54,6 +54,13 @@ CREATE TABLE emoji
     reaction TEXT NOT NULL
 );
 
+CREATE TABLE user_emoji
+(
+    id TEXT REFERENCES users(username) ON DELETE CASCADE,
+    comic_id INT REFERENCES comics(comic_id) ON DELETE CASCADE,
+    reaction TEXT NOT NULL
+);
+
 
 
 

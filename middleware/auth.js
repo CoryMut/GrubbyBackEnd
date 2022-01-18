@@ -13,6 +13,7 @@ function checkForCookie(req, res, next) {
         let cookie = jwt.verify(authCookie, KEY_SECRET);
         res.locals.user = cookie.user;
         res.locals.is_admin = cookie.is_admin;
+        res.locals.id = cookie.id;
         next();
     } catch (error) {
         console.error(error);
@@ -46,19 +47,21 @@ function authRequired(req, res, next) {
         jwt.verify(receivedToken, SECRET_KEY, function (err, decoded) {
             if (err && err.name === "TokenExpiredError") {
                 let decoded = jwt.decode(receivedToken);
-                let { username, is_admin, displayName } = decoded;
-                let user = { username, is_admin, displayName };
+                let { username, is_admin, displayName, id } = decoded;
+                let user = { username, is_admin, displayName, id };
                 token = makeToken(user);
                 res.locals.username = username;
                 res.locals.is_admin = is_admin;
                 res.locals.token = token;
                 res.locals.name = displayName;
+                res.locals.id = id;
             } else if (err) {
                 throw new ExpressError("Invalid token. Please re-authenticate.", 401);
             } else if (!err) {
                 res.locals.username = decoded.username;
                 res.locals.is_admin = decoded.is_admin;
                 res.locals.name = decoded.displayName;
+                res.locals.id = decoded.id;
             }
 
             next();

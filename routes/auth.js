@@ -12,9 +12,10 @@ router.post("/checkToken", authRequired, async (req, res, next) => {
         const user = res.locals.username;
         const isAdmin = res.locals.is_admin;
         const name = res.locals.name;
-        const cookie = makeCookie({ username: user, is_admin: isAdmin, displayName: name });
+        const id = res.locals.id;
+        const cookie = makeCookie({ username: user, is_admin: isAdmin, displayName: name, id: id });
         res.cookie("authcookie", cookie, { maxAge: 259200500, httpOnly: true });
-        return res.json({ user, isAdmin, name });
+        return res.json({ user, isAdmin, name, id });
     } catch (error) {
         return res.json({ error });
     }

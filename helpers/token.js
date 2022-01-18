@@ -6,6 +6,7 @@ function makeToken(user) {
         username: user.username,
         is_admin: user.is_admin,
         displayName: user.displayName,
+        id: user.id,
     };
 
     return jwt.sign(payload, SECRET_KEY, { expiresIn: "72h" });
@@ -15,6 +16,7 @@ function makeCookie(user) {
     let payload = {
         username: user.username,
         is_admin: user.is_admin,
+        id: user.id,
     };
 
     return jwt.sign(payload, KEY_SECRET);

@@ -30,6 +30,7 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "sendgrid_key";
 const SENDGRID_EMAIL = process.env.SENDGRID_EMAIL || "sendgrid_email";
 
 const SENDGRID_NAME = process.env.SENDGRID_NAME || "sendgrid_name";
+const MONGO_DB_URI = process.env.MONGO_DB_URI;
 
 let DB_URI;
 
@@ -59,4 +60,5 @@ module.exports = {
     SENDGRID_API_KEY,
     SENDGRID_EMAIL,
     SENDGRID_NAME,
+    MONGO_DB_URI,
 };
