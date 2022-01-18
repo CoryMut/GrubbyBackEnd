@@ -75,7 +75,7 @@ class User {
 
     static async authenticate(data) {
         const results = await db.query(
-            `SELECT username, password, is_admin, display_name, email, verified, external_login
+            `SELECT id, username, password, is_admin, display_name, email, verified, external_login
 			FROM users WHERE email = $1`,
             [data.email.toLowerCase()]
         );
@@ -96,7 +96,12 @@ class User {
         if (user) {
             const validUser = await bcrypt.compare(data.password, user.password);
             if (validUser) {
-                return { username: user.username, is_admin: user.is_admin, displayName: user.display_name };
+                return {
+                    username: user.username,
+                    is_admin: user.is_admin,
+                    displayName: user.display_name,
+                    id: user.id,
+                };
             } else {
                 throw new ExpressError(`Incorrect password`, 401);
             }
