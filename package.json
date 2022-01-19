@@ -1,0 +1,48 @@
+{
+    "name": "express-jobly",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "jest": {
+        "verbose": false
+    },
+    "scripts": {
+        "test": "jest",
+        "start": "nodemon -e html,css,js,json server.js",
+        "seed": "psql < data.sql"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@sendgrid/mail": "^7.4.2",
+        "aws-sdk": "^2.783.0",
+        "bcrypt": "^5.0.0",
+        "cookie-parser": "^1.4.5",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-fileupload": "^1.2.0",
+        "express-ws": "^4.0.0",
+        "find-config": "^1.0.0",
+        "google-auth-library": "^6.1.4",
+        "jsonschema": "^1.2.6",
+        "jsonwebtoken": "^8.5.1",
+        "md5-file": "^5.0.0",
+        "moment": "^2.29.1",
+        "mongoose": "^6.1.5",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.4",
+        "pg": "^8.3.0",
+        "sanitize-filename": "^1.6.3",
+        "sharp": "^0.26.2",
+        "validator": "^13.1.1",
+        "ws": "^7.3.1"
+    },
+    "devDependencies": {
+        "axios": "^0.21.0",
+        "cheerio": "^1.0.0-rc.3",
+        "jest": "^27.3.1",
+        "supertest": "^4.0.2"
+    }
+}
