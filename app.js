@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(
     cors({
         origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com"],
+        // origin: ["http://localhost:3000"],
         credentials: true,
         exposedHeaders: ["set-cookie"],
     })
@@ -41,12 +42,14 @@ const comicRoutes = require("./routes/comic");
 const userRoutes = require("./routes/users");
 const adminRoutes = require("./routes/admin");
 const verifyRoutes = require("./routes/verify");
+const triviaRoutes = require("./routes/trivia");
 
 app.use(verifyRoutes);
 app.use(checkClient);
 app.use("/comic", comicRoutes);
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
+app.use("/trivia", triviaRoutes);
 app.use(authRoutes);
 
 /** 404 handler */

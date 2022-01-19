@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
-const { SECRET_KEY, KEY_SECRET, CLIENT_SECRET, ORIGIN1, ORIGIN2 } = require("../config");
+const { SECRET_KEY, KEY_SECRET, CLIENT_SECRET, ORIGIN1, ORIGIN2, ORIGIN3 } = require("../config");
 
 function makeToken(user) {
     let payload = {
         username: user.username,
         is_admin: user.is_admin,
         displayName: user.displayName,
+        id: user.id,
     };
 
     return jwt.sign(payload, SECRET_KEY, { expiresIn: "72h" });
@@ -15,6 +16,7 @@ function makeCookie(user) {
     let payload = {
         username: user.username,
         is_admin: user.is_admin,
+        id: user.id,
     };
 
     return jwt.sign(payload, KEY_SECRET);
@@ -31,7 +33,7 @@ function verifyCookie(cookie) {
 
 function verifyClient(token, origin) {
     try {
-        if (origin !== ORIGIN1 && origin !== ORIGIN2) {
+        if (origin !== ORIGIN1 && origin !== ORIGIN2 && origin !== ORIGIN3) {
             throw Error("Unauthorized Origin");
         } else {
             jwt.verify(token, CLIENT_SECRET);

@@ -21,6 +21,7 @@ const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 
 const ORIGIN1 = process.env.ORIGIN1 || "http://localhost:3000";
 const ORIGIN2 = process.env.ORIGIN2 || "http://localhost:3000";
+const ORIGIN3 = process.env.ORIGIN3 || "http://localhost:3000";
 
 const VERIFY_EMAIL = process.env.VERIFY_EMAIL || "template";
 const PASS_RESET = process.env.PASS_RESET || "template";
@@ -30,6 +31,7 @@ const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || "sendgrid_key";
 const SENDGRID_EMAIL = process.env.SENDGRID_EMAIL || "sendgrid_email";
 
 const SENDGRID_NAME = process.env.SENDGRID_NAME || "sendgrid_name";
+const MONGO_DB_URI = process.env.MONGO_DB_URI;
 
 let DB_URI;
 
@@ -52,6 +54,10 @@ module.exports = {
     GOOGLE_CLIENT_ID,
     ORIGIN1,
     ORIGIN2,
+<<<<<<< HEAD
+=======
+    ORIGIN3,
+>>>>>>> trivia-dev
     BASE_URL,
     CLIENT_URL,
     PASS_RESET,
@@ -59,4 +65,8 @@ module.exports = {
     SENDGRID_API_KEY,
     SENDGRID_EMAIL,
     SENDGRID_NAME,
+<<<<<<< HEAD
+=======
+    MONGO_DB_URI,
+>>>>>>> trivia-dev
 };

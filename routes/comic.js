@@ -82,8 +82,11 @@ router.get("/all", async (req, res, next) => {
     try {
         let { page, sort } = req.query;
         if (page) {
+<<<<<<< HEAD
             console.log("SORT", sort);
             console.log(typeof sort);
+=======
+>>>>>>> trivia-dev
             let arraySort = sort === "true" ? "DESC" : "ASC";
             let result = await Comic.getAllComics(page, arraySort);
             let numComics = await Comic.getCount();
@@ -167,11 +170,19 @@ router.get("/:comic_id/emotes", async (req, res, next) => {
     }
 });
 
+<<<<<<< HEAD
 router.get("/:comic_id/:username", async (req, res, next) => {
     try {
         let { comic_id, username } = req.params;
 
         let result = await Comic.getUserEmoteData(username, comic_id);
+=======
+router.get("/:comic_id/:userId", async (req, res, next) => {
+    try {
+        let { comic_id, userId } = req.params;
+
+        let result = await Comic.getUserEmoteData(userId, comic_id);
+>>>>>>> trivia-dev
 
         return res.status(200).json({ reaction: result.reaction });
     } catch (error) {
@@ -179,6 +190,7 @@ router.get("/:comic_id/:username", async (req, res, next) => {
         return next(error);
     }
 });
+<<<<<<< HEAD
 
 router.post("/:comic_id/:username", async (req, res, next) => {
     try {
@@ -186,12 +198,48 @@ router.post("/:comic_id/:username", async (req, res, next) => {
         let { data } = req.body;
         let { reaction } = data;
         let result = await Comic.createUserEmoteData(username, comic_id, reaction);
+=======
+// router.get("/:comic_id/:username", async (req, res, next) => {
+//     try {
+//         let { comic_id, username } = req.params;
+
+//         let result = await Comic.getUserEmoteData(username, comic_id);
+
+//         return res.status(200).json({ reaction: result.reaction });
+//     } catch (error) {
+//         console.error(error);
+//         return next(error);
+//     }
+// });
+
+router.post("/:comic_id/:userId", async (req, res, next) => {
+    try {
+        let { comic_id, userId } = req.params;
+        let { data } = req.body;
+        let { reaction } = data;
+        let result = await Comic.createUserEmoteData(userId, comic_id, reaction);
+>>>>>>> trivia-dev
         return res.status(200).json({ message: "Created user emote data successfully!" });
     } catch (error) {
         console.error(error);
         return next(error);
     }
 });
+<<<<<<< HEAD
+=======
+// router.post("/:comic_id/:username", async (req, res, next) => {
+//     try {
+//         let { comic_id, username } = req.params;
+//         let { data } = req.body;
+//         let { reaction } = data;
+//         let result = await Comic.createUserEmoteData(username, comic_id, reaction);
+//         return res.status(200).json({ message: "Created user emote data successfully!" });
+//     } catch (error) {
+//         console.error(error);
+//         return next(error);
+//     }
+// });
+>>>>>>> trivia-dev
 
 router.patch("/:comic_id/:username", async (req, res, next) => {
     try {
