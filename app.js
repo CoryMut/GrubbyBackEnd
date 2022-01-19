@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use(
     cors({
-        origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com", "https://corysplayground.com"],
+        origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com"],
         // origin: ["http://localhost:3000"],
         credentials: true,
         exposedHeaders: ["set-cookie"],
