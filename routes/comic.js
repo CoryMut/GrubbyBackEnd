@@ -112,6 +112,7 @@ router.get("/characters", async (req, res, next) => {
 router.get("/search", async (req, res, next) => {
     try {
         let { searchTerm, offset = 0, sort = "ASC" } = req.query;
+        console.log(searchTerm, offset, sort);
         if (!searchTerm) {
             throw new ExpressError("Missing search term", 400);
         }
