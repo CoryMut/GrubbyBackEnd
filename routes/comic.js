@@ -112,7 +112,6 @@ router.get("/characters", async (req, res, next) => {
 router.get("/search", async (req, res, next) => {
     try {
         let { searchTerm, offset = 0, sort = "ASC" } = req.query;
-        console.log(searchTerm, offset, sort);
         if (!searchTerm) {
             throw new ExpressError("Missing search term", 400);
         }
@@ -128,7 +127,6 @@ router.get("/search", async (req, res, next) => {
             newOffset = 0;
             fullCount = 0;
         }
-        console.log(offset, fullCount);
         return res.status(200).json({ comics: result, offset: newOffset, resultCount: fullCount });
     } catch (error) {
         console.error(error);
