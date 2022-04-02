@@ -100,17 +100,16 @@ class Comic {
         return result.rows[0];
     }
 
-    static async getAllComics(page, arraySort) {
-        let offset = (Number(page) - 1) * 20;
+    static async getAllComics(offset, arraySort) {
         let result;
         if (arraySort === "ASC") {
             result = await db.query(
-                `SELECT comic_id, description, name FROM comics ORDER BY comics ASC LIMIT 20 OFFSET $1`,
+                `SELECT comic_id, description, name, COUNT(*) OVER() AS full_count FROM comics ORDER BY comics ASC LIMIT 20 OFFSET $1`,
                 [offset]
             );
         } else if (arraySort === "DESC") {
             result = await db.query(
-                `SELECT comic_id, description, name FROM comics ORDER BY comics DESC LIMIT 20 OFFSET $1`,
+                `SELECT comic_id, description, name, COUNT(*) OVER() AS full_count FROM comics ORDER BY comics DESC LIMIT 20 OFFSET $1`,
                 [offset]
             );
         }
@@ -133,8 +132,9 @@ class Comic {
         return result.rows;
     }
 
-    static async search(searchTerm, page, arraySort) {
-        let offset = (Number(page) - 1) * 20;
+    // static async search(searchTerm, page, arraySort) {
+    static async search(searchTerm, offset, arraySort) {
+        // let offset = (Number(page) - 1) * 20;
         let result;
         if (arraySort === "ASC") {
             result = await db.query(

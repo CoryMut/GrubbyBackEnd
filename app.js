@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const { verifyClient } = require("./helpers/token");
 const ExpressError = require("./helpers/expressError");
 const morgan = require("morgan");
+const compression = require("compression");
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(fileUpload());
 app.use(cookieParser());
 
 app.use(morgan("tiny"));
+
+app.use(compression());
 
 async function checkClient(req, res, next) {
     try {

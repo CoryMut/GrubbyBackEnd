@@ -80,13 +80,14 @@ router.post("/upload", checkForCookie, async (req, res, next) => {
 
 router.get("/all", async (req, res, next) => {
     try {
-        let { page, sort } = req.query;
-        if (page) {
+        let { offset, sort } = req.query;
+        if (offset) {
             let arraySort = sort === "true" ? "DESC" : "ASC";
-            let result = await Comic.getAllComics(page, arraySort);
-            let numComics = await Comic.getCount();
-            let count = Math.ceil(Number(numComics) / 20);
-            return res.status(200).json({ comics: result, count: count, resultCount: numComics });
+            let result = await Comic.getAllComics(offset, arraySort);
+            // let numComics = await Comic.getCount();
+            let numComics = result[0].full_count ? result[0].full_count : 0;
+            let newOffset = Number(offset) + Number(result.length);
+            return res.status(200).json({ comics: result, offset: newOffset, resultCount: +numComics });
         } else {
             return res.status(400).json({ message: "Invalid page request" });
         }
@@ -110,28 +111,53 @@ router.get("/characters", async (req, res, next) => {
 
 router.get("/search", async (req, res, next) => {
     try {
-        let { searchTerm, page = 1, sort = "ASC" } = req.query;
+        let { searchTerm, offset = 0, sort = "ASC" } = req.query;
         if (!searchTerm) {
             throw new ExpressError("Missing search term", 400);
         }
         let arraySort = sort === "true" ? "DESC" : "ASC";
 
-        let result = await Comic.search(searchTerm, page, arraySort);
-        let count;
+        let result = await Comic.search(searchTerm, offset, arraySort);
+        let newOffset;
         let fullCount;
         if (result.length > 0) {
-            count = Math.ceil(Number(result[0].full_count) / 20);
+            newOffset = Number(offset) + Number(result.length);
             fullCount = result[0].full_count;
         } else {
-            count = 0;
+            newOffset = 0;
             fullCount = 0;
         }
-        return res.status(200).json({ comics: result, count: count, resultCount: fullCount });
+        console.log(offset, fullCount);
+        return res.status(200).json({ comics: result, offset: newOffset, resultCount: fullCount });
     } catch (error) {
         console.error(error);
         return next(error);
     }
 });
+// router.get("/search", async (req, res, next) => {
+//     try {
+//         let { searchTerm, page = 1, sort = "ASC" } = req.query;
+//         if (!searchTerm) {
+//             throw new ExpressError("Missing search term", 400);
+//         }
+//         let arraySort = sort === "true" ? "DESC" : "ASC";
+
+//         let result = await Comic.search(searchTerm, page, arraySort);
+//         let count;
+//         let fullCount;
+//         if (result.length > 0) {
+//             count = Math.ceil(Number(result[0].full_count) / 20);
+//             fullCount = result[0].full_count;
+//         } else {
+//             count = 0;
+//             fullCount = 0;
+//         }
+//         return res.status(200).json({ comics: result, count: count, resultCount: fullCount });
+//     } catch (error) {
+//         console.error(error);
+//         return next(error);
+//     }
+// });
 
 router.patch("/:comic_id", checkForCookie, async (req, res, next) => {
     try {

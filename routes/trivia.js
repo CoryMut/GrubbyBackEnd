@@ -28,7 +28,6 @@ router.get("/", async (req, res, next) => {
 
         return res.status(200).json({ leaderboards: { wins, coins } });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 });
@@ -39,7 +38,6 @@ router.get("/question", async (req, res, next) => {
         let newTrivia = trivia[0];
         return res.status(200).json({ trivia: newTrivia });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 });
@@ -55,7 +53,6 @@ router.post("/add", checkForCookie, async (req, res, next) => {
         await newLeaderboard.save();
         return res.status(200).json({ info: newLeaderboard });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 });
@@ -72,7 +69,6 @@ router.get("/:user_id", async (req, res, next) => {
 
         return res.status(200).json({ info: userInfo[0], newPlayer: false });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 });
@@ -91,7 +87,6 @@ router.put("/", checkForCookie, async (req, res, next) => {
         await updateGrubby(bet, direction);
         return res.status(200).json({ info: userRecord });
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 });
