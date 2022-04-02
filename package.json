@@ -22,12 +22,12 @@
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
-        "dotenv": "^8.2.0",
+        "dotenv": "^16.0.0",
         "express": "^4.17.1",
         "express-fileupload": "^1.2.0",
-        "express-ws": "^4.0.0",
+        "express-ws": "^5.0.2",
         "find-config": "^1.0.0",
-        "google-auth-library": "^6.1.4",
+        "google-auth-library": "^7.14.1",
         "jsonschema": "^1.2.6",
         "jsonwebtoken": "^8.5.1",
         "md5-file": "^5.0.0",
@@ -37,14 +37,14 @@
         "nodemon": "^2.0.4",
         "pg": "^8.3.0",
         "sanitize-filename": "^1.6.3",
-        "sharp": "^0.26.2",
+        "sharp": "^0.30.3",
         "validator": "^13.1.1",
-        "ws": "^7.3.1"
+        "ws": "^8.5.0"
     },
     "devDependencies": {
-        "axios": "^0.21.0",
+        "axios": "^0.26.1",
         "cheerio": "^1.0.0-rc.3",
         "jest": "^27.3.1",
-        "supertest": "^4.0.2"
+        "supertest": "^6.2.2"
     }
 }
