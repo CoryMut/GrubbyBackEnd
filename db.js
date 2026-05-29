@@ -1,31 +1,22 @@
-/** Database setup for jobly. */
-
-const { Client } = require("pg");
+const { Pool } = require("pg");
 const { DB_URI } = require("./config");
-let db;
+const poolConfig = {
+    connectionString: DB_URI,
+    max: Number(process.env.PG_MAX_CONNECTIONS) || 5,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+};
 
 if (process.env.NODE_ENV === "production") {
-    // issue with pg and digital ocean managed databases
-    let doWorkAround = DB_URI.includes("sslmode") ? DB_URI.replace("sslmode=require", "") : DB_URI;
-    db = new Client({
-        connectionString: doWorkAround,
-        ssl: {
-            rejectUnauthorized: false,
-        },
-    });
-} else {
-    db = new Client({
-        connectionString: DB_URI,
-    });
+    poolConfig.ssl = {
+        rejectUnauthorized: false,
+    };
 }
 
-// const db = new Client({
-//     connectionString: DB_URI,
-//     ssl: {
-//         rejectUnauthorized: false,
-//     },
-// });
+const db = new Pool(poolConfig);
 
-db.connect();
+db.on("error", (err) => {
+    console.error("Unexpected idle PostgreSQL client error", err);
+});
 
 module.exports = db;
