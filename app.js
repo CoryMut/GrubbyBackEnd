@@ -10,10 +10,22 @@ const compression = require("compression");
 const app = express();
 
 app.use(express.json());
+const ALLOWED_ORIGINS = [
+    "https://grubbythegrape.com",
+    "https://www.grubbythegrape.com",
+    process.env.ORIGIN1,
+    process.env.ORIGIN2,
+    process.env.ORIGIN3,
+].filter(Boolean);
+
 app.use(
     cors({
-        origin: ["https://grubbythegrape.com", "https://www.grubbythegrape.com"],
-        // origin: ["http://localhost:3000"],
+        origin: function (origin, callback) {
+            // allow requests with no origin (mobile apps, curl, etc.)
+            if (!origin) return callback(null, true);
+            if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+            return callback(new Error(`CORS: origin ${origin} not allowed`));
+        },
         credentials: true,
         exposedHeaders: ["set-cookie"],
     }),
@@ -33,7 +45,7 @@ async function checkClient(req, res, next) {
         if (!token || !origin) {
             throw Error("Unauthorized");
         }
-        await verifyClient(token, origin);
+        await verifyClient(token);
         return next();
     } catch (error) {
         return res.status(401).send({ message: "You are not authorized to access this API." });
