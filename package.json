@@ -6,6 +6,9 @@
     "jest": {
         "verbose": false
     },
+    "engines": {
+        "node": ">=18.0.0"
+    },
     "scripts": {
         "test": "jest",
         "start-dev": "nodemon -e html,css,js,json server.js",
